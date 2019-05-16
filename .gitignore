@@ -1,0 +1,22 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+
+# testing
+/**/coverage
+/**/__snapshots__
+# build
+/**/build
+
+.idea
+*.iml
+
+# #build files
+target/
+dist/
+out/
+
+.project
+.settings
+.vscode
+.classpath
+.factorypath
