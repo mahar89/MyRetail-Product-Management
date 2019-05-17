@@ -1,4 +1,4 @@
-package com.myretail.poc;
+package com.myretail.productmanagement;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +14,7 @@ public class ProductManagementApp {
     log.info("Initializing the Product Core Service");
     try {
       ConfigurableApplicationContext context = SpringApplication.run(ProductManagementApp.class, args);
-      log.info("Service Simulator is up and running");
+      log.info("Product Core Service is up and running");
 
     } catch (Throwable t) {
       log.error("Failed to start the Product Core Service", t);

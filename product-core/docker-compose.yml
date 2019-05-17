@@ -7,19 +7,13 @@ services:
       - 57018:27017
     volumes:
       - $PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d
-    networks:
-      - application
 
   product-core:
-    image: myRetail/product-core-web:latest
+    image: myretail/product-core:latest
     environment:
       - MONGODB_HOST=product-core-db
       - MONGODB_PORT=27017
-    networks:
-      - application
+    depends_on:
+      - product-core-db
     ports:
       - "8090:8090"
-
-networks:
-  application:
-    driver: bridge
