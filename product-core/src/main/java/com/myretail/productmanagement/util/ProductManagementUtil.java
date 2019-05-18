@@ -13,4 +13,8 @@ public class ProductManagementUtil {
     public static String getPriceDetailsFetchUri(String productId) {
         return String.format("http://localhost:8080/product/%s/price", productId);
     }
+
+    public static String getExceptionMessageIfProductNotExists(String productId) {
+        return String.format("Product with ID[%s] doesn't exist.", productId);
+    }
 }

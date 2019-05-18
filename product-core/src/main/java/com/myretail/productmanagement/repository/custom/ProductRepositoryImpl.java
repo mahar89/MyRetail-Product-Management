@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 import static com.myretail.productmanagement.util.ProductManagementUtil.PRODUCT_ID;
 import static com.myretail.productmanagement.util.ProductManagementUtil.PRODUCT_PRICE;
 
@@ -23,7 +25,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
       new FindAndModifyOptions().upsert(false).returnNew(true);
 
   @Override
-  public Product upsert(Product product) {
+  public Optional<Product> upsert(Product product) {
 
     String productId = product.getProductId();
     Price price = product.getPrice();
@@ -33,8 +35,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     Update update = new Update();
     update.set(PRODUCT_PRICE, price);
 
-    return mongoTemplate.findAndModify(
-        query, update, FIND_AND_MODIFY_OPTIONS, Product.class);
+    return Optional.ofNullable(mongoTemplate.findAndModify(
+        query, update, FIND_AND_MODIFY_OPTIONS, Product.class));
 
   }
 }

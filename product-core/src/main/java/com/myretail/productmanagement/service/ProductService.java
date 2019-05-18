@@ -29,7 +29,7 @@ public class ProductService {
     final ProductDto productDto = productRepository
         .findByProductId(productId)
         .map(productDtoMapper::productToProductDto)
-        .orElseGet(() -> productDetailsService.fetchAndSaveProduct(productId)
+        .orElseGet(() -> productDetailsService.fetchAndSaveProduct(productId, null)
             .map(productDtoMapper::productToProductDto)
             .orElseThrow(() ->
                 new NoSuchElementException(
@@ -41,16 +41,22 @@ public class ProductService {
     return productDto;
   }
 
-  public ProductDto patchProduct(ProductDto productDto) {
-    log.info("Updating the product with ID[{}] ", productDto.getProductId());
+  public ProductDto updateProduct(ProductDto productDto) {
+    String productId = productDto.getProductId();
+    log.info("Updating the product with ID[{}] ", productId);
 
-    Product product = productRepository.upsert(productDtoMapper.productDtoToProduct(productDto));
+    final ProductDto updatedProductDto = productRepository
+        .upsert(productDtoMapper.productDtoToProduct(productDto))
+        .map(productDtoMapper::productToProductDto)
+        .orElseGet(() -> productDetailsService.fetchAndSaveProduct(productId, productDtoMapper.priceDtoToPrice(productDto.getPrice()))
+            .map(productDtoMapper::productToProductDto)
+            .orElseThrow(() ->
+                new NoSuchElementException(
+                    format("Product with ID[%s] doesn't exist.", productId)))
+        );
 
-    if (null == product) {
-      throw new NoSuchElementException(format("Product with ID[%s] doesn't exist.", productDto.getProductId()));
-    }
 
-    log.info("Product with ID[{}] updated successfully.", productDto.getProductId());
-    return productDtoMapper.productToProductDto(product);
+    log.info("Product with ID[{}] updated successfully.", updatedProductDto.getProductId());
+    return updatedProductDto;
   }
 }
