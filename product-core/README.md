@@ -42,35 +42,41 @@
 
      ii. You can open up the project in IntelliJ / eclipse, and run the application with the
      following parameters:
-
-    Main class: `ProductManagementApp`
+     ```
+       Main class: `ProductManagementApp`
+     ```
 
 4. Test the app:
 
-   ### Through Postman
+   #### Through Postman
 
    i.  Get product for given Id:
-          Method: GET
-          URI: http://localhost:8090/api/products/138604282
-
+    ```
+       Method: GET
+       URL: http://localhost:8090/api/products/138604282
+    ```
    ii. Update product price for given Id:
-          Method: PATCH
-          URI: http://localhost:8090/api/products/138604282
-          Request-Body:
-           {
-              "current_price":{
-                 "value":2.12,
-                 "currency_code":"USD"
-              }
+    ```
+       Method: PATCH
+       URL: http://localhost:8090/api/products/138604282
+       Request-Body:
+         {
+           "current_price":{
+              "value":2.12,
+              "currency_code":"USD"
            }
+         }
+    ```
 
    iii. Mock Price API: (Note- Not supported through Docker)
-          Method: GET
-          URI: http://localhost:8080/product/138604282/price
-          Expected-Response:
-           {
-              "current_price":{
-                 "value":12.56,
-                 "currency_code":"USD"
-              }
+    ```
+       Method: GET
+       URL: http://localhost:8080/product/138604282/price
+       Sample-Response:
+         {
+           "current_price":{
+              "value":12.56,
+              "currency_code":"USD"
            }
+         }    
+    ```
