@@ -19,7 +19,7 @@
 2. Build the project:
 
     ```
-    $ cd /path/to/MyRetail-Product_Management
+    $ cd /path/to/MyRetail-Product-Management
     $ mvn clean install
     ```
 
@@ -28,7 +28,7 @@
     #### Through Docker
 
     ```
-    $ cd /path/to/MyRetail-Product_Management/product-core
+    $ cd /path/to/MyRetail-Product-Management/product-core
     $ docker-compose up
     ```
 

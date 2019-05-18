@@ -23,8 +23,8 @@ public class ProductDetailsService {
 
   private final RestTemplate restTemplate;
 
-  Optional<Product> fetchAndSaveProduct(String productId, @Nullable Price price) {
-    log.info("Fetching details for ProductID[{}]", productId);
+  Optional<Product> fetchAndSaveProduct(Integer productId, @Nullable Price price) {
+    log.info("Fetching details for ProductId[{}]", productId);
 
     try {
       if (null == price) {
@@ -49,7 +49,7 @@ public class ProductDetailsService {
       return Optional.of(productRepository.save(product));
 
     } catch (NullPointerException e) {
-      log.error("No details found for ProductID[{}]", productId);
+      log.error("No details found for ProductId[{}]", productId);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
     }

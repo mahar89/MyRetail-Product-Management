@@ -28,9 +28,9 @@ Please refer to the README.md in each subsequent folder for development instruct
 ```
 
 ### Build the application
-1.Build MyRetail-Product_Management
+1.Build MyRetail-Product-Management
 
 ```
-    $ cd /path/to/MyRetail-Product_Management
+    $ cd /path/to/MyRetail-Product-Management
     $ mvn clean install
 ```

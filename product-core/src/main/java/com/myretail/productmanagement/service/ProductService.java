@@ -1,6 +1,5 @@
 package com.myretail.productmanagement.service;
 
-import com.myretail.productmanagement.common.entities.Product;
 import com.myretail.productmanagement.dto.ProductDto;
 import com.myretail.productmanagement.mapper.ProductDtoMapper;
 import com.myretail.productmanagement.repository.ProductRepository;
@@ -23,7 +22,7 @@ public class ProductService {
 
   private final ProductRepository productRepository;
 
-  public ProductDto getProduct(String productId) {
+  public ProductDto getProduct(Integer productId) {
     log.info("Retrieving product with ID[{}] ", productId);
 
     final ProductDto productDto = productRepository
@@ -41,9 +40,14 @@ public class ProductService {
     return productDto;
   }
 
-  public ProductDto updateProduct(ProductDto productDto) {
-    String productId = productDto.getProductId();
+  public ProductDto updateProduct(Integer productId, ProductDto productDto) {
     log.info("Updating the product with ID[{}] ", productId);
+
+    if (null != productDto.getProductId() && productDto.getProductId().intValue() != productId.intValue()) {
+      throw new IllegalArgumentException("ProductId passed in Request-Body is different. Please use the correct ProductId!!");
+    }
+
+    productDto.setProductId(productId);
 
     final ProductDto updatedProductDto = productRepository
         .upsert(productDtoMapper.productDtoToProduct(productDto))
