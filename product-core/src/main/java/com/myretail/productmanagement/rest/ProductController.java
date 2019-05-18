@@ -17,13 +17,14 @@ public class ProductController {
   private final ProductService productService;
 
   @GetMapping(path = "/{productId}")
-  public ResponseEntity<ProductDto> getProduct(@PathVariable final String productId) {
+  public ResponseEntity<ProductDto> getProduct(@PathVariable final Integer productId) {
     return ResponseEntity.ok(productService.getProduct(productId));
   }
 
   @PatchMapping(path = "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> patchProduct(@PathVariable final String productId,
+  public ResponseEntity<?> patchProduct(@PathVariable final Integer productId,
                                         @Valid @RequestBody final ProductDto productDto) {
-    return ResponseEntity.ok(productService.updateProduct(productDto));
+
+    return ResponseEntity.ok(productService.updateProduct(productId, productDto));
   }
 }

@@ -14,7 +14,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.myretail.productmanagement.util.ProductManagementUtil.getExceptionMessageIfProductNotExists;
 import static com.myretail.productmanagement.util.ProjectManagementTestUtil.*;
 import static org.mockito.Matchers.any;
 
@@ -39,12 +38,12 @@ public class ProductServiceTest {
   @Test
   public void GIVEN_an_productId_and_stored_product_WHEN_getProduct_invoked_THEN_returns_stored_product() {
 
-    when(productRepository.findByProductId(any(String.class))).thenReturn(Optional.of(createProductStub()));
+    when(productRepository.findByProductId(any(Integer.class))).thenReturn(Optional.of(createProductStub()));
     when(productDtoMapper.productToProductDto(any(Product.class))).thenReturn(createProductDtoStub());
 
     ProductDto outputProductDto = productService.getProduct(PRODUCT_ID);
-    verify(productRepository).findByProductId(any(String.class));
-    verify(productDetailsService, times(0)).fetchAndSaveProduct(any(String.class), any(Price.class));
+    verify(productRepository).findByProductId(any(Integer.class));
+    verify(productDetailsService, times(0)).fetchAndSaveProduct(any(Integer.class), any(Price.class));
     verify(productDtoMapper).productToProductDto(any(Product.class));
 
     assertEquals(createProductDtoStub(), outputProductDto);
@@ -53,13 +52,13 @@ public class ProductServiceTest {
   @Test
   public void GIVEN_an_productId_and_unstored_product_WHEN_getProduct_invoked_THEN_returns_newly_stored_product() {
 
-    when(productRepository.findByProductId(any(String.class))).thenReturn(Optional.empty());
-    when(productDetailsService.fetchAndSaveProduct(any(String.class), any(Price.class))).thenReturn(Optional.of(createProductStub()));
+    when(productRepository.findByProductId(any(Integer.class))).thenReturn(Optional.empty());
+    when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.of(createProductStub()));
     when(productDtoMapper.productToProductDto(any(Product.class))).thenReturn(createProductDtoStub());
 
     ProductDto outputProductDto = productService.getProduct(PRODUCT_ID);
-    verify(productRepository).findByProductId(any(String.class));
-    verify(productDetailsService).fetchAndSaveProduct(any(String.class), any(Price.class));
+    verify(productRepository).findByProductId(any(Integer.class));
+    verify(productDetailsService).fetchAndSaveProduct(any(Integer.class), any(Price.class));
     verify(productDtoMapper).productToProductDto(any(Product.class));
 
     assertEquals(createProductDtoStub(), outputProductDto);
@@ -70,8 +69,8 @@ public class ProductServiceTest {
 
     final String exceptionMessage = getExceptionMessageIfProductNotExists(NOT_EXISTING_PRODUCT_ID);
 
-    when(productRepository.findByProductId(any(String.class))).thenReturn(Optional.empty());
-    when(productDetailsService.fetchAndSaveProduct(any(String.class), any(Price.class))).thenReturn(Optional.empty());
+    when(productRepository.findByProductId(any(Integer.class))).thenReturn(Optional.empty());
+    when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.empty());
 
     try {
       productService.getProduct(NOT_EXISTING_PRODUCT_ID);
@@ -88,9 +87,9 @@ public class ProductServiceTest {
     when(productRepository.upsert(any(Product.class))).thenReturn(Optional.of(updatedProductStub()));
     when(productDtoMapper.productToProductDto(any(Product.class))).thenReturn(updatedProductDtoStub());
 
-    ProductDto outputProductDto = productService.updateProduct(updatedProductDtoStub());
+    ProductDto outputProductDto = productService.updateProduct(PRODUCT_ID, updatedProductDtoStub());
     verify(productRepository).upsert(any(Product.class));
-    verify(productDetailsService, times(0)).fetchAndSaveProduct(any(String.class), any(Price.class));
+    verify(productDetailsService, times(0)).fetchAndSaveProduct(any(Integer.class), any(Price.class));
     verify(productDtoMapper).productToProductDto(any(Product.class));
 
     assertEquals(updatedProductDtoStub(), outputProductDto);
@@ -98,13 +97,13 @@ public class ProductServiceTest {
 
   @Test
   public void GIVEN_a_price_update_request_and_unstored_product_WHEN_updateProduct_invoked_THEN_returns_productDto() {
-    when(productDetailsService.fetchAndSaveProduct(any(String.class), any(Price.class))).thenReturn(Optional.of(updatedProductStub()));
+    when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.of(updatedProductStub()));
     when(productRepository.upsert(any(Product.class))).thenReturn(Optional.empty());
     when(productDtoMapper.productToProductDto(any(Product.class))).thenReturn(updatedProductDtoStub());
 
-    ProductDto outputProductDto = productService.updateProduct(updatedProductDtoStub());
+    ProductDto outputProductDto = productService.updateProduct(PRODUCT_ID, updatedProductDtoStub());
     verify(productRepository).upsert(any(Product.class));
-    verify(productDetailsService).fetchAndSaveProduct(any(String.class), any(Price.class));
+    verify(productDetailsService).fetchAndSaveProduct(any(Integer.class), any(Price.class));
     verify(productDtoMapper).productToProductDto(any(Product.class));
 
     assertEquals(updatedProductDtoStub(), outputProductDto);
@@ -116,10 +115,10 @@ public class ProductServiceTest {
     final String exceptionMessage = getExceptionMessageIfProductNotExists(NOT_EXISTING_PRODUCT_ID);
 
     when(productRepository.upsert(any(Product.class))).thenReturn(Optional.empty());
-    when(productDetailsService.fetchAndSaveProduct(any(String.class), any(Price.class))).thenReturn(Optional.empty());
+    when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.empty());
 
     try {
-      productService.updateProduct(notExistingProductDtoStub());
+      productService.updateProduct(NOT_EXISTING_PRODUCT_ID, notExistingProductDtoStub());
     } catch (NoSuchElementException exception) {
       assertEquals(exceptionMessage, exception.getMessage());
     }

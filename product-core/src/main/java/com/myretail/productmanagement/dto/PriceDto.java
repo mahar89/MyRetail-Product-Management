@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class PriceDto {
 
-  @NotNull(message = "Price value cannot be null or empty.")
+  @NotNull(message = "Price value cannot be null.")
   private Double value;
 
   @NotBlank(message = "Currency code cannot be null or empty.")

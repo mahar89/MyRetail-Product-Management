@@ -6,15 +6,11 @@ public class ProductManagementUtil {
 
     public static final String PRODUCT_PRICE = "price";
 
-    public static String getProductDetailsFetchUri(String productId) {
+    public static String getProductDetailsFetchUri(Integer productId) {
         return String.format("https://redsky.target.com/v2/pdp/tcin/%s?excludes=taxonomy,price,promotion,bulk_ship,rating_and_review_reviews,rating_and_review_statistics,question_answer_statistics", productId);
     }
 
-    public static String getPriceDetailsFetchUri(String productId) {
+    public static String getPriceDetailsFetchUri(Integer productId) {
         return String.format("http://localhost:8080/product/%s/price", productId);
-    }
-
-    public static String getExceptionMessageIfProductNotExists(String productId) {
-        return String.format("Product with ID[%s] doesn't exist.", productId);
     }
 }

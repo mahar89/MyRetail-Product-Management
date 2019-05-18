@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -18,8 +19,7 @@ import javax.validation.constraints.NotBlank;
 public class ProductDto {
 
   @JsonProperty("id")
-  @NotBlank(message = "ProductID cannot be null or empty.")
-  private String productId;
+  private Integer productId;
 
   private String name;
 

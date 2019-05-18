@@ -19,7 +19,7 @@ public class Product {
   private String id;
 
   @Indexed(unique = true)
-  private String productId;
+  private Integer productId;
 
   private String name;
 

@@ -27,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
   @Override
   public Optional<Product> upsert(Product product) {
 
-    String productId = product.getProductId();
+    Integer productId = product.getProductId();
     Price price = product.getPrice();
 
     Query query = new Query().addCriteria(Criteria.where(PRODUCT_ID).is(productId));
