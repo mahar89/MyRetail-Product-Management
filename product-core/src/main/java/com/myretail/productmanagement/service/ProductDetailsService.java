@@ -23,23 +23,27 @@ public class ProductDetailsService {
 
   private final RestTemplate restTemplate;
 
-  public Optional<Product> fetchAndSaveProduct(String productId) {
+  Optional<Product> fetchAndSaveProduct(String productId) {
+    log.info("Fetching details for ProductID[{}]", productId);
 
     try {
-      final String uri = ProductManagementUtil.getProductExternalUri(productId);
+      final String productDetailsUri = ProductManagementUtil.getProductDetailsFetchUri(productId);
+      final String priceDetailsUri = ProductManagementUtil.getPriceDetailsFetchUri(productId);
 
-      ProductDetailsParent productDetails = restTemplate.getForObject(uri, ProductDetailsParent.class);
+      ProductDetailsParent productDetails = restTemplate.getForObject(productDetailsUri, ProductDetailsParent.class);
+
+      Price price = restTemplate.getForObject(priceDetailsUri, Price.class);
 
       final Product product = Product.builder()
           .productId(productId)
           .name(productDetails.getProductDetails().getProductItem().getProductDescription().getName())
-          .price(Price.builder().value(17.231).currency("USD").build())
+          .price(price)
           .build();
 
       return Optional.of(productRepository.save(product));
 
     } catch (Exception e) {
-      log.error("No details found for productId - [{}]", productId);
+      log.error("No details found for ProductID[{}]", productId);
 
       return Optional.empty();
     }

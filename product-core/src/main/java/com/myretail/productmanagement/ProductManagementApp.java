@@ -1,19 +1,18 @@
 package com.myretail.productmanagement;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-@Slf4j
+@Log4j2
 public class ProductManagementApp {
 
   public static void main(String[] args) {
 
     log.info("Initializing the Product Core Service");
     try {
-      ConfigurableApplicationContext context = SpringApplication.run(ProductManagementApp.class, args);
+      SpringApplication.run(ProductManagementApp.class, args);
       log.info("Product Core Service is up and running");
 
     } catch (Throwable t) {
