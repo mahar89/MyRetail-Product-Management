@@ -7,9 +7,11 @@ import com.myretail.productmanagement.repository.ProductRepository;
 import com.myretail.productmanagement.util.ProductManagementUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,20 +21,24 @@ public class ProductDetailsService {
 
   private final ProductRepository productRepository;
 
-  private final ProductPriceService productPriceService;
-
   private final RestTemplate restTemplate;
 
-  Optional<Product> fetchAndSaveProduct(String productId) {
+  Optional<Product> fetchAndSaveProduct(String productId, @Nullable Price price) {
     log.info("Fetching details for ProductID[{}]", productId);
 
     try {
+      if (null == price) {
+        final String priceDetailsUri = ProductManagementUtil.getPriceDetailsFetchUri(productId);
+        price = restTemplate.getForObject(priceDetailsUri, Price.class);
+
+        Objects.requireNonNull(price);
+      }
+
       final String productDetailsUri = ProductManagementUtil.getProductDetailsFetchUri(productId);
-      final String priceDetailsUri = ProductManagementUtil.getPriceDetailsFetchUri(productId);
 
       ProductDetailsParent productDetails = restTemplate.getForObject(productDetailsUri, ProductDetailsParent.class);
 
-      Price price = restTemplate.getForObject(priceDetailsUri, Price.class);
+      Objects.requireNonNull(productDetails);
 
       final Product product = Product.builder()
           .productId(productId)
@@ -42,10 +48,12 @@ public class ProductDetailsService {
 
       return Optional.of(productRepository.save(product));
 
-    } catch (Exception e) {
+    } catch (NullPointerException e) {
       log.error("No details found for ProductID[{}]", productId);
-
-      return Optional.empty();
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
     }
+
+    return Optional.empty();
   }
 }

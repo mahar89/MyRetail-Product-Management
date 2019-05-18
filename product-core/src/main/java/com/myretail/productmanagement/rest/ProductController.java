@@ -24,6 +24,6 @@ public class ProductController {
   @PatchMapping(path = "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> patchProduct(@PathVariable final String productId,
                                         @Valid @RequestBody final ProductDto productDto) {
-    return ResponseEntity.ok(productService.patchProduct(productDto));
+    return ResponseEntity.ok(productService.updateProduct(productDto));
   }
 }
