@@ -1,5 +1,6 @@
 package com.myretail.productmanagement.service;
 
+import com.myretail.productmanagement.common.entities.Product;
 import com.myretail.productmanagement.dto.ProductDto;
 import com.myretail.productmanagement.mapper.ProductDtoMapper;
 import com.myretail.productmanagement.repository.ProductRepository;
@@ -23,7 +24,7 @@ public class ProductService {
   private final ProductRepository productRepository;
 
   public ProductDto getProduct(String productId) {
-    log.info("Retrieving product for id : {} ", productId);
+    log.info("Retrieving product with ID[{}] ", productId);
 
     final ProductDto productDto = productRepository
         .findByProductId(productId)
@@ -32,11 +33,24 @@ public class ProductService {
             .map(productDtoMapper::productToProductDto)
             .orElseThrow(() ->
                 new NoSuchElementException(
-                    format("Product for id %s doesn't exist.", productId)))
+                    format("Product with ID[%s] doesn't exist.", productId)))
         );
 
-    log.info("Sending {} product", productDto);
+    log.info("Sending {} product.", productDto);
 
     return productDto;
+  }
+
+  public ProductDto patchProduct(ProductDto productDto) {
+    log.info("Updating the product with ID[{}] ", productDto.getProductId());
+
+    Product product = productRepository.upsert(productDtoMapper.productDtoToProduct(productDto));
+
+    if (null == product) {
+      throw new NoSuchElementException(format("Product with ID[%s] doesn't exist.", productDto.getProductId()));
+    }
+
+    log.info("Product with ID[{}] updated successfully.", productDto.getProductId());
+    return productDtoMapper.productToProductDto(product);
   }
 }

@@ -15,9 +15,7 @@
 
 
     <dependencyManagement>
-
         <dependencies>
-
         </dependencies>
     </dependencyManagement>
 </project>
