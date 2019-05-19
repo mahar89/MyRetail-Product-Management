@@ -5,7 +5,9 @@ import com.myretail.productmanagement.common.entities.Product;
 import com.myretail.productmanagement.dto.ProductDto;
 import com.myretail.productmanagement.mapper.ProductDtoMapper;
 import com.myretail.productmanagement.repository.ProductRepository;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.myretail.productmanagement.util.ProjectManagementTestUtil.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Matchers.any;
 
 import static org.junit.Assert.*;
@@ -31,6 +34,9 @@ public class ProductServiceTest {
 
   @Mock
   private ProductDetailsService productDetailsService;
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @InjectMocks
   private ProductService productService;
@@ -68,17 +74,13 @@ public class ProductServiceTest {
   public void GIVEN_an_productId_WHEN_product_does_not_exist_THEN_getProduct_throws_NoSuchElement_exception() {
 
     final String exceptionMessage = getExceptionMessageIfProductNotExists(NOT_EXISTING_PRODUCT_ID);
+    thrown.expect(NoSuchElementException.class);
+    thrown.expectMessage(equalTo(exceptionMessage));
 
     when(productRepository.findByProductId(any(Integer.class))).thenReturn(Optional.empty());
     when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.empty());
 
-    try {
-      productService.getProduct(NOT_EXISTING_PRODUCT_ID);
-    } catch (NoSuchElementException exception) {
-      assertEquals(exceptionMessage, exception.getMessage());
-    }
-
-    verify(productDtoMapper, times(0)).productToProductDto(any(Product.class));
+    productService.getProduct(NOT_EXISTING_PRODUCT_ID);
   }
 
   @Test
@@ -97,6 +99,7 @@ public class ProductServiceTest {
 
   @Test
   public void GIVEN_a_price_update_request_and_unstored_product_WHEN_updateProduct_invoked_THEN_returns_productDto() {
+
     when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.of(updatedProductStub()));
     when(productRepository.upsert(any(Product.class))).thenReturn(Optional.empty());
     when(productDtoMapper.productToProductDto(any(Product.class))).thenReturn(updatedProductDtoStub());
@@ -113,16 +116,12 @@ public class ProductServiceTest {
   public void GIVEN_a_price_update_request_WHEN_product_does_not_exist_THEN_updateProduct_throws_NoSuchElement_exception() {
 
     final String exceptionMessage = getExceptionMessageIfProductNotExists(NOT_EXISTING_PRODUCT_ID);
+    thrown.expect(NoSuchElementException.class);
+    thrown.expectMessage(equalTo(exceptionMessage));
 
     when(productRepository.upsert(any(Product.class))).thenReturn(Optional.empty());
     when(productDetailsService.fetchAndSaveProduct(any(Integer.class), any(Price.class))).thenReturn(Optional.empty());
 
-    try {
-      productService.updateProduct(NOT_EXISTING_PRODUCT_ID, notExistingProductDtoStub());
-    } catch (NoSuchElementException exception) {
-      assertEquals(exceptionMessage, exception.getMessage());
-    }
-
-    verify(productDtoMapper, times(0)).productToProductDto(any(Product.class));
+    productService.updateProduct(NOT_EXISTING_PRODUCT_ID, notExistingProductDtoStub());
   }
 }

@@ -4,11 +4,17 @@ import com.myretail.productmanagement.common.entities.Price;
 import com.myretail.productmanagement.common.entities.Product;
 import com.myretail.productmanagement.dto.PriceDto;
 import com.myretail.productmanagement.dto.ProductDto;
+import org.bson.Document;
+import wiremock.com.google.common.collect.ImmutableMap;
+
+import java.util.Map;
 
 public class ProjectManagementTestUtil {
 
   public static final Integer PRODUCT_ID = 3860428;
-
+  public static final String PRODUCT_ID_KEY = "productId";
+  public static final String PRICE_KEY = "price";
+  public static final String SET = "$set";
   public static final Integer NOT_EXISTING_PRODUCT_ID = 3123;
 
 
@@ -54,6 +60,29 @@ public class ProjectManagementTestUtil {
         .productId(NOT_EXISTING_PRODUCT_ID)
         .price(PriceDto.builder().value(92.0).currency("TT").build())
         .build();
+  }
+
+  public static Map<String, Object> createProductDocumentStub() {
+    return new ImmutableMap.Builder<String, Object>()
+        .put(PRICE_KEY, createPriceDocumentStub())
+        .build();
+  }
+
+  public static Price createPriceDocumentStub() {
+    return Price.builder()
+        .currency("USD")
+        .value(92.0)
+        .build();
+  }
+
+  public static Document expectedUpdateObjectDocumentFields() {
+    Document document = new Document();
+    document.put(PRICE_KEY, createPriceDocumentStub());
+    return document;
+  }
+
+  public static  Map<String, ? extends Object> criteriaKeyValueMapForPriceUpdation() {
+    return ImmutableMap.of(PRODUCT_ID_KEY, PRODUCT_ID);
   }
 
 }
